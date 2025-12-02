@@ -112,22 +112,36 @@ function getErpByPrefix(PDO $pdo, array $ERP_T, string $pfx, array &$warnings): 
 /* ---------- render (เฉพาะส่วนเนื้อหา) ---------- */
 ?>
 
-  <form class="row g-2 mb-3" method="get">
+<?php
+// Helper: esc (Safe definition)
+if (!function_exists('esc')) {
+    function esc($str) {
+        return htmlspecialchars((string)$str, ENT_QUOTES, 'UTF-8');
+    }
+}
+?>
+
+<!-- Search Form -->
+<div class="content-wrapper mb-4">
+  <form class="row g-3 align-items-end" method="get">
     <input type="hidden" name="page" value="monthly">
     
     <div class="col-md-5">
-      <label class="form-label">Prefix เดือน (เช่น 2509,2510)</label>
+      <label class="form-label fw-bold text-muted">Prefix เดือน (เช่น 2509,2510)</label>
       <input class="form-control" name="pfxs" value="<?=esc($_GET['pfxs'] ?? '')?>" placeholder="2509,2510">
     </div>
     <div class="col-md-5">
-      <label class="form-label">เดือน (YYYY-MM) เช่น 2025-09,2025-10</label>
+      <label class="form-label fw-bold text-muted">เดือน (YYYY-MM) เช่น 2025-09,2025-10</label>
       <input class="form-control" name="yms" value="<?=esc($_GET['yms'] ?? '')?>" placeholder="2025-09,2025-10">
     </div>
-    <div class="col-md-2 align-self-end">
-      <button class="btn btn-success w-100">Compare</button>
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100"><i class="fas fa-search me-1"></i> Compare</button>
     </div>
-    <div class="col-12 small-muted mt-1">ช่อง <b>REMARK</b> พิมพ์เองได้ และระบบจะจำค่าไว้ในเบราว์เซอร์อัตโนมัติ (localStorage) ตามเดือนและประเภทเอกสาร</div>
+    <div class="col-12">
+      <small class="text-muted"><i class="fas fa-info-circle me-1"></i> ช่อง <b>REMARK</b> พิมพ์เองได้ และระบบจะจำค่าไว้ในเบราว์เซอร์อัตโนมัติ (localStorage)</small>
+    </div>
   </form>
+</div>
 
 <?php
 // --- ตัด SO ออก ---
@@ -149,56 +163,169 @@ foreach ($jobs as $job) {
     $sum['nav']+=$n; $sum['d']+=$d; $sum['s']+=$s; $sum['t']+=$t; $sum['diff']+=$diff;
   }
 ?>
-  <div class="box" data-ym="<?=esc($job['ym'])?>">
-    <div class="hdr"><?=esc($job['title'])?></div>
-    <table>
-      <thead>
-        <tr>
-          <th rowspan="2" style="width:18%">Document<br>Type</th>
-          <th rowspan="2" style="width:10%">NAV</th>
-          <th colspan="3" style="width:33%">ERP</th>
-          <th rowspan="2" style="width:14%">DIFF<br>(NAV-ERP)</th>
-          <th rowspan="2" style="width:25%">REMARK</th>
-        </tr>
-        <tr class="subhdr">
-          <th>DRAFT</th><th>SUBMITED</th><th>TOTAL (ERP)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach($rows as $r): ?>
-        <tr data-doc="<?=esc($r['key'])?>">
-          <td><?=esc($r['label'])?></td>
-          <td class="num"><?=number_format($r['nav'])?></td>
-          <td class="num"><?=number_format($r['d'])?></td>
-          <td class="num"><?=number_format($r['s'])?></td>
-          <td class="num"><?=number_format($r['t'])?></td>
-          <td class="num"><?=number_format($r['diff'])?></td>
-          <td class="remark" contenteditable="true" spellcheck="false"></td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-      
-      <tfoot>
-        <tr>
-          <td>Total</td>
-          <td class="num"><?=number_format($sum['nav'])?></td>
-          <td class="num">-</td> <td class="num">-</td> <td class="num"><?=number_format($sum['t'])?></td>
-          <td class="num"><?=number_format($sum['diff'])?></td>
-          <td>-</td>
-        </tr>
-      </tfoot>
+  
+  <div class="content-wrapper mb-4" data-ym="<?=esc($job['ym'])?>">
+    <!-- Enhanced Month Header with Gradient -->
+    <div class="month-header mb-4">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div class="header-icon-wrapper me-3">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1 fw-bold"><?=esc($job['title'])?></h3>
+                    <p class="mb-0 text-muted small">
+                        <i class="fas fa-tag me-1"></i>Prefix: <span class="badge bg-secondary"><?=esc($job['pfx'])?></span>
+                    </p>
+                </div>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-primary px-3 py-2">
+                    <i class="fas fa-chart-bar me-1"></i>Monthly Report
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="dashboard-container mb-4">
+        <div class="stat-card">
+            <div class="stat-icon bg-blue-light"><i class="fas fa-file-invoice"></i></div>
+            <div class="stat-info">
+                <h5>Total NAV</h5>
+                <h3><?= number_format($sum['nav']) ?></h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-green-light"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info">
+                <h5>Total ERP</h5>
+                <h3 class="text-success"><?= number_format($sum['t']) ?></h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-red-light"><i class="fas fa-balance-scale"></i></div>
+            <div class="stat-info">
+                <h5>Difference</h5>
+                <h3 style="color: <?= $sum['diff'] != 0 ? '#c62828' : '#2e7d32' ?>;"><?= number_format($sum['diff']) ?></h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light text-center">
+          <tr>
+            <th rowspan="2" style="width:15%" class="align-middle">Document Type</th>
+            <th rowspan="2" style="width:10%" class="align-middle">NAV</th>
+            <th colspan="3" style="width:30%" class="align-middle">ERP</th>
+            <th rowspan="2" style="width:10%" class="align-middle">DIFF</th>
+            <th rowspan="2" style="width:35%" class="align-middle">REMARK</th>
+          </tr>
+          <tr class="text-muted small">
+            <th>DRAFT</th><th>SUBMIT</th><th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach($rows as $r): ?>
+          <tr data-doc="<?=esc($r['key'])?>">
+            <td class="fw-bold text-muted"><?=esc($r['label'])?></td>
+            <td class="text-end fw-bold text-primary"><?=number_format($r['nav'])?></td>
+            <td class="text-end text-muted"><?=number_format($r['d'])?></td>
+            <td class="text-end text-success"><?=number_format($r['s'])?></td>
+            <td class="text-end fw-bold text-dark"><?=number_format($r['t'])?></td>
+            <td class="text-end fw-bold" style="color: <?= $r['diff'] != 0 ? '#c62828' : '#2e7d32' ?>;">
+                <?=number_format($r['diff'])?>
+            </td>
+            <td class="remark bg-light border" contenteditable="true" spellcheck="false" style="outline: none; min-width: 200px;"></td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+        
+        <tfoot class="table-light fw-bold">
+          <tr>
+            <td>Total</td>
+            <td class="text-end text-primary"><?=number_format($sum['nav'])?></td>
+            <td class="text-end">-</td> <td class="text-end">-</td> <td class="text-end text-dark"><?=number_format($sum['t'])?></td>
+            <td class="text-end" style="color: <?= $sum['diff'] != 0 ? '#c62828' : '#2e7d32' ?>;">
+                <?=number_format($sum['diff'])?>
+            </td>
+            <td>-</td>
+          </tr>
+        </tfoot>
       </table>
+    </div>
   </div>
 <?php } ?>
 
   <?php if (!empty($erpWarnings)): ?>
-  <div class="alert alert-warning mt-3">
-    ⚠️ ERP warnings:
+  <div class="alert alert-warning mt-3 shadow-sm">
+    <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>ERP Warnings</h5>
     <ul class="mb-0">
       <?php foreach(array_unique($erpWarnings) as $w): ?>
         <li><code><?=esc($w)?></code></li>
       <?php endforeach; ?>
     </ul>
-    <small>สร้าง Custom Field ให้ครบ: SO/PO/PR = <code>nav_ref</code>, DN = <code>nav_reference_number</code></small>
+    <hr>
+    <small class="mb-0">สร้าง Custom Field ให้ครบ: SO/PO/PR = <code>nav_ref</code>, DN = <code>nav_reference_number</code></small>
   </div>
   <?php endif; ?>
+
+<style>
+/* Enhanced Month Header */
+.month-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 20px 25px;
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+.month-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+.month-header h3 {
+  color: white;
+  font-size: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.month-header .text-muted {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+.header-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: white;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.month-header .badge {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.month-header .bg-secondary {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.month-header .bg-primary {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+</style>

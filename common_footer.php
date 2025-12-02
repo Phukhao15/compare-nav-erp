@@ -1,5 +1,15 @@
-﻿<div class="text-center mt-3 mb-3" style="font-weight:bold">อัปเดตล่าสุด: <?=date('d/m/Y H:i')?> น.</div>
+﻿</div> <!-- End Container -->
 
+<footer class="text-center mt-5 py-4" style="background-color: #fff; border-top: 1px solid #e0e0e0; color: #6c757d;">
+  <div class="container">
+    <div class="mb-2">
+      <small style="font-weight: 500;">NAV-ERP Comparison Tool</small>
+    </div>
+    <div style="font-size: 0.85rem;">
+      อัปเดตล่าสุด: <span class="text-dark fw-bold"><?=date('d/m/Y H:i')?> น.</span>
+    </div>
+  </div>
+</footer>
 
 <!-- Loading Overlay -->
 <div id="loading-overlay">
@@ -67,9 +77,11 @@
         const originalText = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
         btn.style.color = 'green';
+        btn.style.borderColor = 'green';
         setTimeout(() => {
           btn.innerHTML = originalText;
           btn.style.color = '';
+          btn.style.borderColor = '';
         }, 2000);
       } catch (err) {
         alert('Failed to copy');
