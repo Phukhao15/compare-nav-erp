@@ -10,289 +10,283 @@ global $page;
   <title>NAV ERP Comparison</title>
   <link rel="icon" href="./logo.png">
 
-  <!-- Google Fonts: Prompt -->
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Bootstrap 5 CSS -->
   <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
   
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
+      /* ธีมสีหลัก รับค่าจาก PHP หรือใช้ค่า Default */
       --primary-color: <?=$themeColor ?? '#2e7d32'?>;
-      --primary-dark: #1b5e20;
-      --primary-light: #e8f5e9;
-      --secondary-color: #f57f17;
-      --text-color: #333;
-      --text-muted: #6c757d;
-      --border-color: #e0e0e0;
-      --bg-color: #f4f6f8;
-      --card-shadow: 0 4px 6px rgba(0,0,0,0.04);
-      --header-height: 70px;
+      --primary-hover: color-mix(in srgb, var(--primary-color), black 10%);
+      --bg-color: #f0f2f5;
+      --card-bg: #ffffff;
+      --text-main: #2d3748;
+      --text-muted: #718096;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --radius: 12px;
     }
 
     body {
       font-family: "Prompt", system-ui, -apple-system, sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       background-color: var(--bg-color);
-      color: var(--text-color);
-      line-height: 1.6;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* --- Universal Dashboard Styles --- */
-    .dashboard-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-    .stat-card {
-        flex: 1;
-        min-width: 220px;
-        background: #fff;
-        border: none;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: var(--card-shadow);
-        display: flex;
-        align-items: center;
-        transition: transform 0.2s;
-    }
-    .stat-card:hover {
-        transform: translateY(-2px);
-    }
-    .stat-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        margin-right: 20px;
-    }
-    .stat-info h5 { margin: 0 0 5px 0; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-    .stat-info h3 { margin: 0; font-size: 1.75rem; font-weight: 700; color: var(--text-color); }
-    
-    .bg-blue-light { background-color: #e3f2fd; color: #1976d2; }
-    .bg-green-light { background-color: #e8f5e9; color: #2e7d32; }
-    .bg-red-light { background-color: #ffebee; color: #c62828; }
-    .bg-orange-light { background-color: #fff3e0; color: #ef6c00; }
-
-    /* --- Layout & Containers --- */
+    /* --- Navbar Styling --- */
     .main-header {
-      background: #fff;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      padding: 15px 0;
-      margin-bottom: 30px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow-sm);
+      padding: 0.75rem 0;
       position: sticky;
       top: 0;
       z-index: 1000;
+      margin-bottom: 2rem;
     }
-
-    .container {
-      max-width: 96%;
-      width: 100%;
-    }
-
-    .page-title {
+    
+    .brand-logo {
       font-weight: 700;
+      font-size: 1.25rem;
       color: var(--primary-color);
-      margin: 0;
-      font-size: 1.5rem;
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    /* --- Navigation --- */
     .nav-pills .nav-link {
       color: var(--text-muted);
       font-weight: 500;
-      padding: 8px 16px;
       border-radius: 8px;
-      transition: all 0.2s;
-      margin-right: 5px;
+      padding: 8px 16px;
+      transition: all 0.2s ease;
     }
     
     .nav-pills .nav-link:hover {
-      background-color: rgba(0,0,0,0.03);
+      background-color: #f7fafc;
       color: var(--primary-color);
     }
     
     .nav-pills .nav-link.active {
       background-color: var(--primary-color);
       color: #fff;
-      box-shadow: 0 2px 4px rgba(46, 125, 50, 0.3);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
 
-    .nav-icon { margin-right: 6px; }
-
-    /* --- Cards & Content --- */
+    /* --- Card Container --- */
     .content-wrapper {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: var(--card-shadow);
-      padding: 25px;
-      margin-bottom: 30px;
-      border: 1px solid rgba(0,0,0,0.02);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
     }
 
-    /* --- Tables --- */
-    .table-custom {
-      border-collapse: separate;
-      border-spacing: 0;
+    /* --- Search Form --- */
+    .search-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+    }
+    .form-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #cbd5e0;
+      padding: 0.6rem 1rem;
+      font-size: 0.95rem;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color), white 80%);
+    }
+
+    /* --- Dashboard Stats Cards --- */
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+    /* Icon Colors */
+    .bg-blue-light { background: #ebf8ff; color: #3182ce; }
+    .bg-green-light { background: #f0fff4; color: #38a169; }
+    .bg-red-light { background: #fff5f5; color: #e53e3e; }
+    .bg-orange-light { background: #fffaf0; color: #dd6b20; }
+    .bg-purple-light { background: #faf5ff; color: #805ad5; }
+
+    .stat-info h5 {
+      margin: 0 0 4px 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .stat-info h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    /* --- Table Styling --- */
+    .table-responsive {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+    }
+    .table {
+      margin-bottom: 0;
       width: 100%;
     }
-    .table-custom thead th {
-      background-color: var(--primary-light);
-      color: var(--primary-dark);
+    .table thead th {
+      background-color: #f7fafc;
+      color: var(--text-muted);
       font-weight: 600;
-      padding: 12px 15px;
-      border-bottom: 2px solid var(--primary-color);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border-color);
       white-space: nowrap;
     }
-    .table-custom tbody td {
-      padding: 12px 15px;
-      border-bottom: 1px solid var(--border-color);
-      vertical-align: middle;
-    }
-    .table-custom tbody tr:hover {
-      background-color: #fafafa;
-    }
-
-    /* --- Enhanced Table Styling for Better Visibility --- */
-    .table {
-      font-size: 1.05rem;
-    }
-    .table thead th {
-      font-size: 1.1rem;
-      padding: 16px 14px;
-      font-weight: 600;
-    }
     .table tbody td {
-      padding: 15px 14px;
-      font-size: 1rem;
+      padding: 12px 16px;
+      vertical-align: middle;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-color);
     }
-    .table tfoot td {
-      padding: 17px 14px;
-      font-size: 1.1rem;
+    .table tbody tr:hover {
+      background-color: #f8fafc;
     }
     
-    /* --- Forms --- */
-    .form-control {
-      border-radius: 8px;
-      padding: 11px 16px;
-      border: 1px solid #ced4da;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      font-size: 1rem;
+    /* Status Badges */
+    .badge-custom {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
-    .form-control:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.15);
-    }
+    .badge-success { background: #def7ec; color: #03543f; }
+    .badge-warning { background: #fdf6b2; color: #723b13; }
+    .badge-danger { background: #fde8e8; color: #9b1c1c; }
+    .badge-gray { background: #f3f4f6; color: #374151; }
+    .badge-info { background: #e1effe; color: #1e429f; }
+
+    /* Button Styling */
     .btn-primary {
       background-color: var(--primary-color);
       border-color: var(--primary-color);
-      border-radius: 8px;
-      padding: 11px 22px;
+      padding: 0.6rem 1.2rem;
       font-weight: 500;
-      font-size: 1rem;
-      box-shadow: 0 2px 4px rgba(46, 125, 50, 0.2);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .btn-primary:hover {
-      background-color: var(--primary-dark);
-      border-color: var(--primary-dark);
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
       transform: translateY(-1px);
     }
 
-    /* --- Utilities --- */
-    .text-primary { color: var(--primary-color) !important; }
-    .text-success { color: #2e7d32 !important; }
-    .text-danger { color: #c62828 !important; }
-    
     /* Loading Overlay */
     #loading-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(255, 255, 255, 0.9);
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(4px);
       z-index: 9999;
       display: none;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      backdrop-filter: blur(2px);
     }
     .spinner {
-      width: 50px; height: 50px;
-      border: 4px solid var(--primary-light);
-      border-top: 4px solid var(--primary-color);
+      width: 40px; height: 40px;
+      border: 3px solid #e2e8f0;
+      border-top: 3px solid var(--primary-color);
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 15px;
+      animation: spin 1s linear infinite;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    /* Copy Button */
-    .btn-copy {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      color: #555;
-      font-size: 0.85rem;
-      padding: 5px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .btn-copy:hover {
-      background-color: #f8f9fa;
-      color: var(--primary-color);
-      border-color: var(--primary-color);
-    }
   </style>
 </head>
 <body>
 
-<!-- Main Header -->
 <header class="main-header">
-  <div class="container d-flex justify-content-between align-items-center">
-    <div class="d-flex align-items-center">
-        <!-- Logo or Icon -->
-        <div class="me-3 d-flex align-items-center justify-content-center bg-green-light rounded-circle" style="width: 40px; height: 40px;">
-            <i class="fas fa-chart-line text-success"></i>
+  <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+    <div class="brand-logo">
+        <div class="bg-green-light rounded-3 p-2 me-2">
+            <i class="fas fa-layer-group text-success"></i>
         </div>
-        <h1 class="page-title">NAV-ERP Compare</h1>
+        <span>NAV-ERP Compare</span>
     </div>
     
-    <!-- Navigation -->
-    <ul class="nav nav-pills">
+    <ul class="nav nav-pills d-none d-md-flex">
       <li class="nav-item">
         <a class="nav-link <?=($page === 'monthly') ? 'active' : ''?>" href="index.php?page=monthly">
-          <i class="nav-icon fas fa-calendar-alt"></i> รายเดือน
+          <i class="fas fa-calendar-alt me-1"></i> รายเดือน
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link <?=($page === 'sales') ? 'active' : ''?>" href="index.php?page=sales">
-          <i class="nav-icon fas fa-user-tie"></i> Sales
+          <i class="fas fa-user-tie me-1"></i> Sales
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link <?= ($page == 'salesv2') ? 'active' : '' ?>" href="index.php?page=salesv2">
-          <i class="nav-icon fas fa-filter"></i> Sales V2
+          <i class="fas fa-filter me-1"></i> Sales V2
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link <?= ($page == 'match_list') ? 'active' : '' ?>" href="index.php?page=match_list">
-          <i class="nav-icon fas fa-exchange-alt"></i> เช็คยอดชนใบ
+          <i class="fas fa-check-double me-1"></i> เช็คยอดชนใบ
         </a>
       </li>
     </ul>
   </div>
 </header>
 
-<div class="container">
+<div class="container-fluid px-4">

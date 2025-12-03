@@ -176,146 +176,96 @@ for ($i = $minCode; $i <= $maxCode; $i++) {
 $totalDiff = $tot['nav'] - $tot['t'];
 ?>
 
-<!-- Custom CSS for Universal Compatibility -->
-<style>
-    .dashboard-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-    .stat-card {
-        flex: 1;
-        min-width: 200px;
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        display: flex;
-        align-items: center;
-    }
-    .stat-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        margin-right: 15px;
-    }
-    .stat-info h5 { margin: 0 0 5px 0; font-size: 0.85rem; color: #777; text-transform: uppercase; font-weight: bold; }
-    .stat-info h3 { margin: 0; font-size: 1.5rem; font-weight: bold; color: #333; }
-    
-    .bg-blue-light { background-color: #e3f2fd; color: #1976d2; }
-    .bg-green-light { background-color: #e8f5e9; color: #2e7d32; }
-    .bg-red-light { background-color: #ffebee; color: #c62828; }
-    .bg-orange-light { background-color: #fff3e0; color: #ef6c00; }
-    
-    /* Ensure form is visible */
-    .search-box {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        margin-bottom: 20px;
-    }
-</style>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">เปรียบเทียบตาม SalesV2</h3>
+        <p class="text-muted mb-0">กรองเฉพาะเอกสารที่มี Amount > 0</p>
+    </div>
+</div>
 
-<div class="mb-4">
-    <h3 style="margin-bottom: 20px;">
-        <i class="fas fa-filter text-primary me-2"></i> เปรียบเทียบตาม SalesV2 (เฉพาะ Amount มีค่า)
-    </h3>
-    
-    <!-- Summary Dashboard -->
-    <div class="dashboard-container">
-        <div class="stat-card">
-            <div class="stat-icon bg-blue-light"><i class="fas fa-file-invoice"></i></div>
-            <div class="stat-info">
-                <h5>Total NAV</h5>
-                <h3><?= number_format($tot['nav']) ?></h3>
-            </div>
+<div class="dashboard-container">
+    <div class="stat-card">
+        <div class="stat-icon bg-blue-light"><i class="fas fa-file-invoice"></i></div>
+        <div class="stat-info">
+            <h5>Total NAV</h5>
+            <h3><?= number_format($tot['nav']) ?></h3>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon bg-green-light"><i class="fas fa-check-circle"></i></div>
-            <div class="stat-info">
-                <h5>Total ERP</h5>
-                <h3 style="color: #2e7d32;"><?= number_format($tot['t']) ?></h3>
-            </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon bg-green-light"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-info">
+            <h5>Total ERP</h5>
+            <h3 class="text-success"><?= number_format($tot['t']) ?></h3>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon bg-red-light"><i class="fas fa-balance-scale"></i></div>
-            <div class="stat-info">
-                <h5>Difference</h5>
-                <h3 style="color: <?= $totalDiff != 0 ? '#c62828' : '#2e7d32' ?>;"><?= number_format($totalDiff) ?></h3>
-            </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon bg-red-light"><i class="fas fa-balance-scale"></i></div>
+        <div class="stat-info">
+            <h5>Difference</h5>
+            <h3 class="<?= $totalDiff != 0 ? 'text-danger' : 'text-success' ?>"><?= number_format($totalDiff) ?></h3>
         </div>
     </div>
 </div>
 
-<!-- Search Form -->
-<form class="search-box row" method="get" style="margin-left: 0; margin-right: 0;">
+<form class="search-box row g-3" method="get">
   <input type="hidden" name="page" value="salesv2">
   
-  <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
-    <label style="font-weight: bold;">MONTH / PREFIX</label>
-    <input class="form-control" name="pfx" value="<?= esc($pfx) ?>" placeholder="เช่น 2510">
+  <div class="col-md-3">
+    <label class="form-label">Month / Prefix</label>
+    <div class="input-group">
+        <span class="input-group-text bg-white"><i class="fas fa-calendar"></i></span>
+        <input class="form-control" name="pfx" value="<?= esc($pfx) ?>" placeholder="เช่น 2510">
+    </div>
   </div>
   
-  <div class="col-md-2 col-sm-12" style="margin-bottom: 10px;">
-    <label>&nbsp;</label>
-    <button class="btn btn-primary w-100 btn-block">
-        <i class="fas fa-search"></i> Filter
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-primary w-100">
+        <i class="fas fa-search me-1"></i> Filter
     </button>
   </div>
 </form>
 
-<div class="table-responsive">
-    <table class="table table-bordered table-hover table-sm align-middle">
-      <thead class="table-primary text-center" style="background-color: #e3f2fd;">
-        <tr>
-          <th style="width:10%">CODE</th>
-          <th style="width:30%">SALES NAME</th>
-          <th style="width:10%">NAV</th>
-          <th style="width:10%">ERP-DRAFT</th>
-          <th style="width:10%">ERP-SUBMIT</th>
-          <th style="width:10%">TOTAL ERP</th>
-          <th style="width:10%">DIFF</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($rows as $r) : ?>
-          <tr>
-            <td class="text-center fw-bold text-muted"><?= esc($r['code']) ?></td>
-            <td><?= esc($r['name']) ?></td>
-            <td class="text-end fw-bold text-primary"><?= number_format($r['nav']) ?></td>
-            <td class="text-end text-muted"><?= number_format($r['d']) ?></td>
-            <td class="text-end text-success"><?= number_format($r['s']) ?></td>
-            <td class="text-end fw-bold text-dark"><?= number_format($r['t']) ?></td>
-            <td class="text-end fw-bold" style="color: <?= $r['diff'] != 0 ? '#c62828' : '#2e7d32' ?>;">
-                <?= number_format($r['diff']) ?>
-            </td>
-          </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <tr style="background-color: #f8f9fa; font-weight: bold;">
-          <td colspan="2" class="text-end">TOTAL</td>
-          <td class="text-end text-primary"><?= number_format($tot['nav']) ?></td>
-          <td class="text-end text-muted">-</td>
-          <td class="text-end text-muted">-</td>
-          <td class="text-end text-dark"><?= number_format($tot['t']) ?></td>
-          <td class="text-end" style="color: <?= $totalDiff != 0 ? '#c62828' : '#2e7d32' ?>;">
-            <?= number_format($totalDiff) ?>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-</div>
-
-<div class="card-footer bg-white py-3" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
-    <div class="text-muted small">
-        <i class="fas fa-info-circle me-1"></i> <strong>Note:</strong> กรองเฉพาะ Sales Order ที่มี Amount > 0 เท่านั้น
+<div class="content-wrapper p-0 overflow-hidden">
+    <div class="table-responsive border-0 shadow-none">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th class="text-center" style="width:10%">CODE</th>
+              <th style="width:30%">SALES NAME</th>
+              <th class="text-end" style="width:10%">NAV</th>
+              <th class="text-end" style="width:10%">ERP DRAFT</th>
+              <th class="text-end" style="width:10%">ERP SUBMIT</th>
+              <th class="text-end" style="width:10%">TOTAL ERP</th>
+              <th class="text-end" style="width:10%">DIFF</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($rows as $r) : ?>
+              <tr>
+                <td class="text-center fw-bold text-muted small"><?= esc($r['code']) ?></td>
+                <td class="fw-bold text-dark"><?= esc($r['name']) ?></td>
+                <td class="text-end font-monospace text-primary"><?= number_format($r['nav']) ?></td>
+                <td class="text-end font-monospace text-muted"><?= number_format($r['d']) ?></td>
+                <td class="text-end font-monospace text-success"><?= number_format($r['s']) ?></td>
+                <td class="text-end font-monospace fw-bold"><?= number_format($r['t']) ?></td>
+                <td class="text-end font-monospace fw-bold <?= $r['diff'] != 0 ? 'text-danger' : 'text-success' ?>">
+                    <?= number_format($r['diff']) ?>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+          <tfoot class="bg-light">
+            <tr>
+              <td colspan="2" class="text-end fw-bold">GRAND TOTAL</td>
+              <td class="text-end fw-bold text-primary"><?= number_format($tot['nav']) ?></td>
+              <td class="text-end text-muted">-</td>
+              <td class="text-end text-muted">-</td>
+              <td class="text-end fw-bold text-dark"><?= number_format($tot['t']) ?></td>
+              <td class="text-end fw-bold <?= $totalDiff != 0 ? 'text-danger' : 'text-success' ?>">
+                <?= number_format($totalDiff) ?>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
     </div>
 </div>

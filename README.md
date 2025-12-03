@@ -88,40 +88,9 @@ $NAV_T = [
 *   Card Design พร้อม Shadow Effects
 *   Hover Effects บนตารางเพื่อการอ่านที่ง่ายขึ้น
 
-## 🔧 Git Workflow
 
-### การสร้าง Branch ใหม่
-```bash
-# สร้าง branch สำหรับ feature ใหม่
-git checkout -b feature/your-feature-name
 
-# สร้าง branch สำหรับแก้ไข bug
-git checkout -b fix/bug-description
 ```
 
-### การ Commit และ Push
-```bash
-# เพิ่มไฟล์ที่แก้ไข
-git add .
 
-# Commit พร้อมข้อความ
-git commit -m "คำอธิบายการเปลี่ยนแปลง"
 
-# Push ไปยัง remote repository
-git push origin branch-name
-```
-
-### การ Merge กลับเข้า Main
-```bash
-# กลับไปที่ main branch
-git checkout main
-
-# Pull ข้อมูลล่าสุด
-git pull origin main
-
-# Merge branch ที่ทำงานเสร็จแล้ว
-git merge feature/your-feature-name
-
-# Push ไปยัง remote
-git push origin main
-```
